@@ -1,0 +1,47 @@
+:root {
+	--link-decoration: none;
+	--font-default: ui-sans-serif,-apple-system;
+	--font-text-theme: var(--font-default);
+}
+
+h1, h2 {
+	border: none !important;
+	font-weight: 400 !important;
+}
+
+h1 {
+	font-size: 1.5em !important;
+	font-weight: 400 !important;
+}
+h2 {
+	font-size: 1.25em !important;
+}
+h3, h4, h5, h6 {
+	font-size: 1em !important;
+}
+
+div.tree-item-children > div > div:not(.mod-collapsible).is-clickable .tree-item-inner {
+	margin-left: -3px;
+}
+
+/* Styles for first past */
+.front-page .mod-header {
+	display: none;
+}
+
+.mod-header h1 {
+	font-size: 16px !important;
+	color: gray !important;
+	font-weight: 400 !important;
+}
+
+
+a {
+	text-decoration: none !important;
+}
+
+/* Sort daily notes folder in reverse order (dates desc) */
+body > div > div.site-body > div.site-body-left-column > div > div.nav-view-outer > div > div > div.tree-item-children > div:nth-child(2) > div.tree-item-children {
+	display: flex;
+	flex-direction: column-reverse;
+}

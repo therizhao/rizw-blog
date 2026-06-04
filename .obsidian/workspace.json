@@ -1,0 +1,208 @@
+{
+  "main": {
+    "id": "2bd7842d23d6cd0d",
+    "type": "split",
+    "children": [
+      {
+        "id": "66bcd99f1ee6cd46",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "d8fa915b8e5559c6",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "d3e95d0af8c7945d",
+    "type": "split",
+    "children": [
+      {
+        "id": "32aaf3322252f5cf",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e985873fd32aabfa",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "2d9b186d9ef6cfc1",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "d4e9c4f431b3cf9e",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "788ec50f1dba76bf",
+    "type": "split",
+    "children": [
+      {
+        "id": "da407980d6f7947f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "1ab76cb7bd4eb71c",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "daily/2025-10-20.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for 2025-10-20"
+            }
+          },
+          {
+            "id": "9965caadbacb6e6f",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "daily/2025-10-20.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from 2025-10-20"
+            }
+          },
+          {
+            "id": "da1bf83539d81816",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "2ebaec96ca78061c",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "daily/2025-10-20.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of 2025-10-20"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false,
+      "publish:Publish changes...": false
+    }
+  },
+  "active": "d8fa915b8e5559c6",
+  "lastOpenFiles": [
+    "daily/2025-10-20.md",
+    "daily/2025-11-08.md",
+    "daily/2025-11-09.md",
+    "make/Ideas Dump.md",
+    "make/Profit-driven Imperfect Product Makerthon.md",
+    "make/Screenshot API Monitor.md",
+    "make",
+    "climbing/7 Chapters of Baby Star.md",
+    "Baby Star – Dancing Through Moss and Memory.md",
+    "daily/2025-10-19.md",
+    "climbing/Reed's Pinnacle Direct.md",
+    "daily/2025-11-03.md",
+    "notes/Train ride.md",
+    "daily/2025-11-01.md",
+    "daily/2025-10-30.md",
+    "daily/2025-10-21.md",
+    "climbing/Valley cracks.md",
+    "notes/Corporate.md",
+    "climbing/Trad climbing anchors.md",
+    "climbing/Yosemite Day 1-2.md",
+    "notes/Experimental note.md",
+    "notes/Purpose.md",
+    "Yosemite.md",
+    "notes/Valley cracks.md",
+    "templates/daily.md",
+    "templates",
+    "hey 👋.md",
+    "publish.js",
+    "favicon.ico",
+    "favicon-32x32.png",
+    "favicon-16x16.png",
+    "apple-touch-icon.png",
+    "android-chrome-512x512.png",
+    "android-chrome-192x192.png",
+    "publish.css",
+    "daily/Untitled.md"
+  ]
+}
