@@ -35,18 +35,9 @@ export function renderTabPage(tab: Tab): string {
 }
 
 export function renderPostPage(post: Post): string {
-  const previous = post.previous
-    ? `<div><a href="${escapeAttribute(post.previous.url)}"><span aria-hidden="true">&larr; </span>${escapeHtml(post.previous.title)}</a></div>`
-    : '<div></div>';
-  const next = post.next
-    ? `<div><a href="${escapeAttribute(post.next.url)}">${escapeHtml(post.next.title)}<span aria-hidden="true"> &rarr;</span></a></div>`
-    : '<div></div>';
-  const nav = post.previous || post.next ? `<nav class="post-nav" aria-label="Adjacent posts">${previous}${next}</nav>` : '';
-
   return renderLayout({
     activeTab: post.tab.slug,
     content: `
-      <a class="back-link" href="${escapeAttribute(post.tab.path)}">&lt; rizhao</a>
       <article class="post-page">
         <header class="post-header">
           <h1>${escapeHtml(post.title)}</h1>
@@ -54,7 +45,6 @@ export function renderPostPage(post: Post): string {
         </header>
         <div class="post-content">${post.html}</div>
       </article>
-      ${nav}
     `,
     description: post.excerpt,
     title: post.title,
@@ -81,7 +71,8 @@ function renderLayout({ activeTab, content, description = defaultDescription, ti
   const tabLinks = tabs
     .map((tab) => {
       const activeClass = activeTab === tab.slug ? ' active' : '';
-      return `<a class="tab-link${activeClass}" href="${escapeAttribute(tab.path)}">${escapeHtml(tab.label)}</a>`;
+      const currentAttribute = activeTab === tab.slug ? ' aria-current="page"' : '';
+      return `<a class="tab-link${activeClass}" href="${escapeAttribute(tab.path)}"${currentAttribute}>${escapeHtml(tab.label)}</a>`;
     })
     .join('');
 
@@ -102,7 +93,6 @@ function renderLayout({ activeTab, content, description = defaultDescription, ti
     <div class="site-shell">
       <header class="site-header">
         <h1 class="site-title"><a href="/">rizhao</a></h1>
-        <p class="site-moment">Living in the moment!</p>
       </header>
       <div class="site-body">
         <nav class="tabs" aria-label="Sections">${tabLinks}</nav>
