@@ -30,10 +30,13 @@ npm install
 npm run dev
 ```
 
-## Cloudflare Pages
+## Cloudflare Workers
+
+Deployed as a Worker serving static assets from `dist/`.
 
 Build command: `npm run build`
 
-Output directory: `dist`
+Deploy command: `npx wrangler deploy`
 
-The same settings are captured in `wrangler.toml`.
+The asset directory and 404 handling are captured in `wrangler.toml` under
+`[assets]`. The `public/_headers` file is honored by Workers static assets.
