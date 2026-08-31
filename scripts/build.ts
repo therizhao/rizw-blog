@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { getAllPosts, getHomePost, getLatestPosts, getPost, getTabs } from '../src/lib/content.ts';
-import { renderHomePage, renderNotFoundPage, renderPostPage, renderTabPage } from '../src/lib/site.ts';
+import { getAboutPost, getPost, getWritingPosts } from '../src/lib/content.ts';
+import { renderAboutPage, renderNotFoundPage, renderPostPage, renderWritingsPage } from '../src/lib/site.ts';
 
 const rootDir = process.cwd();
 const distDir = path.join(rootDir, 'dist');
@@ -16,18 +16,12 @@ export function buildSite(): void {
   copyContentAssets();
   copyImageAssets();
 
-  const homePost = getHomePost();
-  const latestPosts = getLatestPosts(7)
-    .filter((post) => post.url !== homePost?.url)
-    .slice(0, 5);
+  const writingPosts = getWritingPosts();
 
-  writePage('index.html', renderHomePage(homePost, latestPosts));
+  writePage('index.html', renderAboutPage(getAboutPost()));
+  writePage(path.join('writings', 'index.html'), renderWritingsPage(writingPosts));
 
-  for (const tab of getTabs()) {
-    writePage(path.join(tab.slug, 'index.html'), renderTabPage(tab));
-  }
-
-  for (const meta of getAllPosts()) {
+  for (const meta of writingPosts) {
     const post = getPost(meta.tab.slug, meta.slug);
 
     if (!post) {
@@ -41,7 +35,7 @@ export function buildSite(): void {
   writePage('404.html', notFound);
   writePage(path.join('404', 'index.html'), notFound);
 
-  console.log(`Built ${getAllPosts().length} posts across ${getTabs().length} tabs.`);
+  console.log(`Built ${writingPosts.length} writing posts.`);
 }
 
 function writePage(relativePath: string, html: string): void {

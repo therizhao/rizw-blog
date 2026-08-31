@@ -7,7 +7,21 @@ const rootDir = process.cwd();
 const contentDir = path.join(rootDir, 'content');
 const imageDir = path.join(rootDir, 'images');
 
-const preferredTabOrder = ['notes', 'make', 'daily', 'climbing', 'designs', 'old-posts'];
+const preferredTabOrder = ['notes', 'make', 'climbing', 'designs', 'old-posts'];
+
+// Writing tags surfaced as toggle filters on the /writings/ page, in display order.
+export const WRITING_TAGS = ['climb', 'blog', 'design', 'make'] as const;
+export type WritingTag = (typeof WRITING_TAGS)[number];
+
+const folderTags: Record<string, WritingTag> = {
+  climbing: 'climb',
+  designs: 'design',
+  make: 'make',
+  notes: 'blog',
+  'old-posts': 'blog',
+};
+
+const aboutSlug = 'hey';
 const assetExtensions = new Set([
   '.avif',
   '.gif',
@@ -40,6 +54,7 @@ export type PostMeta = {
   slug: string;
   sourcePath: string;
   tab: Omit<Tab, 'posts'>;
+  tag: WritingTag;
   title: string;
   url: string;
 };
@@ -127,18 +142,24 @@ export function getAllPosts(): PostMeta[] {
   return getTabs().flatMap((tab) => tab.posts);
 }
 
-export function getLatestPosts(limit = 6): PostMeta[] {
-  return [...getAllPosts()].sort(sortPosts).slice(0, limit);
+function isAboutPost(post: PostMeta): boolean {
+  return post.tab.folder === 'notes' && post.slug === aboutSlug;
 }
 
-export function getHomePost(): Post | undefined {
-  const homeMeta = getAllPosts().find((post) => post.slug === 'hey');
+export function getAboutPost(): Post | undefined {
+  const aboutMeta = getAllPosts().find(isAboutPost);
 
-  if (!homeMeta) {
+  if (!aboutMeta) {
     return undefined;
   }
 
-  return getPost(homeMeta.tab.slug, homeMeta.slug);
+  return getPost(aboutMeta.tab.slug, aboutMeta.slug);
+}
+
+export function getWritingPosts(): PostMeta[] {
+  return getAllPosts()
+    .filter((post) => !isAboutPost(post))
+    .sort(sortPosts);
 }
 
 export function getPost(tabSlug: string | undefined, postSlug: string | undefined): Post | undefined {
@@ -231,6 +252,7 @@ function buildPost(filePath: string, tab: Omit<Tab, 'posts'>, usedSlugs: Map<str
     slug,
     sourcePath,
     tab,
+    tag: folderTags[tab.folder] ?? 'blog',
     title,
     url: `${tab.path}${slug}/`,
   };
