@@ -1,47 +1,95 @@
-import type { Post, PostMeta, Tab } from './content.ts';
-import { formatPostDate, formatReadingTime, getTabs } from './content.ts';
+import type { Post, PostMeta } from './content.ts';
+import { formatPostDate, formatReadingTime, WRITING_TAGS } from './content.ts';
 
-const defaultDescription = "Rizhao's notes, making logs, climbing writing, designs, and older posts.";
+const defaultDescription = "Rizhao's writings on making, climbing, design, and life.";
+const contactEmail = 'rizhaow@gmail.com';
+
+type Section = 'about' | 'writings';
 
 type LayoutOptions = {
-  activeTab?: string;
+  activeSection?: Section;
   content: string;
   description?: string;
+  /** Markup nested beneath the Writings nav item; only the writings list uses it. */
+  nestedNav?: string;
   title?: string;
 };
 
-export function renderHomePage(homePost: Post | undefined, latestPosts: PostMeta[]): string {
-  const intro = homePost ? `<article class="home-intro post-content">${homePost.html}</article>` : '';
-  const latest =
-    latestPosts.length > 0
-      ? `<section class="latest-section"><h2>Latest</h2>${renderPostList(latestPosts, true)}</section>`
-      : '';
+const navItems: { href: string; label: string; section: Section }[] = [
+  { href: '/', label: 'About', section: 'about' },
+  { href: '/writings/', label: 'Writings', section: 'writings' },
+];
+
+export function renderAboutPage(aboutPost: Post | undefined): string {
+  const intro = aboutPost ? aboutPost.html : '';
 
   return renderLayout({
-    content: `${intro}${latest}`,
-    description: homePost?.excerpt,
-    title: "rizhao's garden",
+    activeSection: 'about',
+    content: `
+      <article class="about-page post-content">
+        ${intro}
+        <p class="about-contact">Contact: <a href="mailto:${contactEmail}">${contactEmail}</a></p>
+      </article>
+    `,
+    description: aboutPost?.excerpt,
+    title: 'About',
   });
 }
 
-export function renderTabPage(tab: Tab): string {
-  const content = tab.slug === 'designs' ? renderDesignList(tab.posts) : renderPostList(tab.posts);
+export function renderWritingsPage(posts: PostMeta[]): string {
+  // Tag filters live in the sidebar as children of the Writings item. One at a time:
+  // nothing selected is the default and means "everything".
+  const toggles = WRITING_TAGS.map(
+    (tag) =>
+      `<button type="button" class="tag-filter" data-tag="${tag}" aria-pressed="false">${escapeHtml(capitalize(tag))}</button>`,
+  ).join('');
+
+  const items = posts
+    .map((post) => {
+      // A cover image in the frontmatter replaces the text excerpt as the preview.
+      const preview = post.coverImage
+        ? `<img class="post-preview" src="${escapeAttribute(post.coverImage)}" alt="" loading="lazy" decoding="async">`
+        : post.excerpt
+          ? `<p>${escapeHtml(post.excerpt)}</p>`
+          : '';
+
+      return `
+        <a class="post-link${post.coverImage ? ' has-preview' : ''}" data-tag="${escapeAttribute(post.tag)}" href="${escapeAttribute(post.url)}" rel="bookmark">
+          <article>
+            <header>
+              <h2>${escapeHtml(post.title)}</h2>
+              ${renderMeta(post)}
+            </header>
+            ${preview}
+          </article>
+        </a>
+      `;
+    })
+    .join('');
+
+  const list = posts.length > 0 ? `<div class="post-list">${items}</div>` : '<p class="empty-state">No posts yet.</p>';
 
   return renderLayout({
-    activeTab: tab.slug,
-    content,
-    title: tab.label,
+    activeSection: 'writings',
+    nestedNav: `<div class="tab-nested" role="group" aria-label="Filter writings by tag">${toggles}</div>`,
+    content: `
+      ${list}
+      <p class="empty-state filter-empty" hidden>Nothing tagged that yet.</p>
+      ${filterScript}
+    `,
+    title: 'Writings',
   });
 }
 
 export function renderPostPage(post: Post): string {
   return renderLayout({
-    activeTab: post.tab.slug,
+    activeSection: 'writings',
     content: `
       <article class="post-page">
         <header class="post-header">
           <h1>${escapeHtml(post.title)}</h1>
           ${renderMeta(post)}
+          <p class="post-tag"><a href="/writings/">${escapeHtml(capitalize(post.tag))}</a></p>
         </header>
         <div class="post-content">${post.html}</div>
       </article>
@@ -65,14 +113,16 @@ export function renderNotFoundPage(): string {
   });
 }
 
-function renderLayout({ activeTab, content, description = defaultDescription, title = "rizhao's garden" }: LayoutOptions): string {
-  const tabs = getTabs();
+function renderLayout({ activeSection, content, description = defaultDescription, nestedNav = '', title = "rizhao's garden" }: LayoutOptions): string {
   const pageTitle = title === "rizhao's garden" ? title : `${title} - rizhao's garden`;
-  const tabLinks = tabs
-    .map((tab) => {
-      const activeClass = activeTab === tab.slug ? ' active' : '';
-      const currentAttribute = activeTab === tab.slug ? ' aria-current="page"' : '';
-      return `<a class="tab-link${activeClass}" href="${escapeAttribute(tab.path)}"${currentAttribute}>${escapeHtml(tab.label)}</a>`;
+  const navLinks = navItems
+    .map((item) => {
+      const activeClass = activeSection === item.section ? ' active' : '';
+      const currentAttribute = activeSection === item.section ? ' aria-current="page"' : '';
+      const link = `<a class="tab-link${activeClass}" href="${escapeAttribute(item.href)}"${currentAttribute}>${escapeHtml(item.label)}</a>`;
+      const nested = item.section === 'writings' ? nestedNav : '';
+
+      return nested ? `<div class="tab-group">${link}${nested}</div>` : link;
     })
     .join('');
 
@@ -95,7 +145,7 @@ function renderLayout({ activeTab, content, description = defaultDescription, ti
         <h1 class="site-title"><a href="/">rizhao</a></h1>
       </header>
       <div class="site-body">
-        <nav class="tabs" aria-label="Sections">${tabLinks}</nav>
+        <nav class="tabs" aria-label="Sections">${navLinks}</nav>
         <main class="content-column">
           ${content}
           <footer class="site-footer"><a href="/">rizhao</a></footer>
@@ -107,59 +157,61 @@ function renderLayout({ activeTab, content, description = defaultDescription, ti
 </html>`;
 }
 
-function renderPostList(posts: PostMeta[], compact = false): string {
-  if (posts.length === 0) {
-    return '<p class="empty-state">No posts yet.</p>';
-  }
-
-  const items = posts
-    .map((post) => {
-      const excerpt = post.excerpt ? `<p>${escapeHtml(post.excerpt)}</p>` : '';
-      return `
-        <a class="post-link" href="${escapeAttribute(post.url)}" rel="bookmark">
-          <article>
-            <header>
-              <h2>${escapeHtml(post.title)}</h2>
-              ${renderMeta(post)}
-            </header>
-            ${excerpt}
-          </article>
-        </a>
-      `;
-    })
-    .join('');
-
-  return `<div class="post-list${compact ? ' compact' : ''}">${items}</div>`;
-}
-
-function renderDesignList(posts: PostMeta[]): string {
-  if (posts.length === 0) {
-    return '<p class="empty-state">No posts yet.</p>';
-  }
-
-  const items = posts
-    .map((post) => {
-      const image = post.coverImage
-        ? `<img src="${escapeAttribute(post.coverImage)}" alt="${escapeAttribute(post.title)}" loading="lazy" decoding="async">`
-        : '';
-
-      return `
-        <a class="design-link" href="${escapeAttribute(post.url)}" rel="bookmark">
-          ${image}
-          <p class="design-caption">${escapeHtml(post.title)}</p>
-        </a>
-      `;
-    })
-    .join('');
-
-  return `<p class="tab-note">Perfection doesn't exist. Accept the randomness of life!</p><div class="design-list">${items}</div>`;
-}
-
 function renderMeta(post: PostMeta): string {
   const date = formatPostDate(post.date);
   const dateText = date ? `${escapeHtml(date)}<span aria-hidden="true"> &bull; </span>` : '';
 
   return `<small>${dateText}${escapeHtml(formatReadingTime(post.readingMinutes))}</small>`;
+}
+
+const filterScript = `<script>
+(function () {
+  var KEY = 'writings-filter';
+  var toggles = Array.prototype.slice.call(document.querySelectorAll('.tag-filter'));
+  var posts = Array.prototype.slice.call(document.querySelectorAll('.post-list .post-link'));
+  var emptyNote = document.querySelector('.filter-empty');
+  if (!toggles.length) return;
+
+  var tags = toggles.map(function (button) { return button.dataset.tag; });
+  // null means no filter, which shows every post.
+  var active = null;
+
+  try {
+    var stored = localStorage.getItem(KEY);
+    if (tags.indexOf(stored) !== -1) active = stored;
+  } catch (error) {}
+
+  function apply() {
+    var visible = 0;
+    posts.forEach(function (post) {
+      var show = active === null || post.dataset.tag === active;
+      post.hidden = !show;
+      if (show) visible++;
+    });
+    toggles.forEach(function (button) {
+      button.setAttribute('aria-pressed', button.dataset.tag === active ? 'true' : 'false');
+    });
+    if (emptyNote) emptyNote.hidden = visible !== 0 || !posts.length;
+    try {
+      if (active === null) localStorage.removeItem(KEY);
+      else localStorage.setItem(KEY, active);
+    } catch (error) {}
+  }
+
+  toggles.forEach(function (button) {
+    button.addEventListener('click', function () {
+      // Clicking the selected tag clears it, returning to the unfiltered list.
+      active = active === button.dataset.tag ? null : button.dataset.tag;
+      apply();
+    });
+  });
+
+  apply();
+})();
+</script>`;
+
+function capitalize(value: string): string {
+  return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
 function escapeHtml(value: string): string {

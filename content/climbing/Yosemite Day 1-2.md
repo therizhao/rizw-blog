@@ -1,3 +1,6 @@
+---
+date: '2025-10-30'
+---
 *25-26 Oct 25*
 
 I was in Yosemite for 5 days. With no doubt, it's the Mecca of climbing.

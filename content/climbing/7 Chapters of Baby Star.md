@@ -1,3 +1,6 @@
+---
+date: '2025-11-08'
+---
 I stem on the two side walls of [Baby Star](https://www.thecrag.com/en/climbing/singapore/dairy-farm/route/12483091), trying to rehearse the sequence. 
 
 If this route were a product, it would never pass a UX review. It's covered in thick moss, the key holds are hidden beyond plain sight. The user would have to rely on memory and intuition to move through the sequence.

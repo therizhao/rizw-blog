@@ -37,6 +37,9 @@
   --text-link: #1a1a1a;
   --text-title: #1a1a1a;
   --table-color: hsla(0, 0%, 0%, 0.12);
+  --hairline-strong: hsla(0, 0%, 0%, 0.22);
+  --pill-selected-bg: hsla(0, 0%, 0%, 0.06);
+  --pill-selected-border: hsla(0, 0%, 0%, 0.42);
   --code-bg: #011627;
   --inline-code-bg: rgba(255, 229, 100, 0.2);
 }
@@ -241,25 +244,105 @@ th {
   font-size: 1.2rem;
 }
 
-.home-intro {
+[hidden] {
+  display: none !important;
+}
+
+.about-page {
   margin-bottom: 5rem;
 }
 
-.home-intro h1,
-.home-intro h2 {
+.about-page > :first-child {
   margin-top: 0;
 }
 
-.latest-section {
-  margin-top: 5rem;
+.about-contact {
+  color: var(--gray);
+  margin-top: 2.5rem;
 }
 
-.latest-section > h2 {
-  margin-bottom: 2.4rem;
+.about-contact a {
+  color: var(--text-link);
 }
 
-.post-list.compact .post-link {
-  margin-bottom: 1.8rem;
+.tab-group {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The rail is the parent-child cue: one hairline spanning the nested tag filters. */
+.tab-nested {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.9rem;
+  padding-left: 1.3rem;
+  position: relative;
+}
+
+.tab-nested::before {
+  background: var(--hairline-strong);
+  bottom: 0;
+  content: '';
+  left: 0.3rem;
+  position: absolute;
+  top: 0;
+  width: 1.5px;
+}
+
+/* Rows sit flush (padding, not gap) so adjacent lit segments join into one line. */
+.tag-filter {
+  background: none;
+  border: none;
+  color: var(--gray);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1.3rem;
+  line-height: 1.9rem;
+  padding: 0.35rem 0;
+  position: relative;
+  text-align: left;
+  transition: color 0.2s ease;
+}
+
+/* Each selected filter lights its own slice of the rail. */
+.tag-filter::before {
+  background: var(--black);
+  bottom: 0;
+  content: '';
+  left: -1rem;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  transition: opacity 0.18s ease;
+  width: 1.5px;
+}
+
+.tag-filter[aria-pressed='true'] {
+  color: var(--text-link);
+}
+
+.tag-filter[aria-pressed='true']::before {
+  opacity: 1;
+}
+
+.tag-filter:hover {
+  color: var(--text-link);
+}
+
+.tag-filter:focus-visible {
+  outline: 2px solid rgba(26, 26, 26, 0.28);
+  outline-offset: 3px;
+}
+
+.post-tag {
+  margin: 0.8rem 0 0;
+}
+
+.post-tag a {
+  border-bottom: none;
+  color: var(--gray);
+  font-size: 1.3rem;
 }
 
 .post-link {
@@ -286,35 +369,21 @@ th {
   margin-top: 0.7rem;
 }
 
-.empty-state,
-.tab-note {
-  color: var(--gray);
+.post-link.has-preview {
+  margin-bottom: 3.2rem;
 }
 
-.design-list {
-  margin-top: 2rem;
-}
-
-.design-link {
-  border-bottom: none;
-  color: inherit;
-  display: block;
-  margin-bottom: 2.4rem;
-  padding-bottom: 0;
-}
-
-.design-link img {
+.post-preview {
+  aspect-ratio: 3 / 2;
   border-radius: 4px;
   display: block;
+  margin-top: 1.2rem;
+  object-fit: cover;
   width: 100%;
 }
 
-.design-caption {
+.empty-state {
   color: var(--gray);
-  font-size: 1.3rem;
-  line-height: 1.9rem;
-  margin: 1.2rem 0 0;
-  padding-left: 0.3rem;
 }
 
 .post-header h1 {
@@ -391,23 +460,51 @@ th {
   }
 
   .tabs {
+    align-items: flex-start;
     flex-direction: row;
+    flex-wrap: wrap;
     gap: 2rem;
-    margin: -1rem -2.2rem 4.5rem;
-    overflow-x: auto;
-    padding: 1rem 2.2rem 0.2rem;
+    margin: -1rem 0 4.5rem;
+    padding: 1rem 0 0.2rem;
     position: static;
-    scrollbar-width: none;
-    white-space: nowrap;
   }
 
-  .tabs::-webkit-scrollbar {
+  /* Flatten the group so the pills wrap onto their own full-width row, flush with
+     the page rather than indented under Writings. */
+  .tab-group {
+    display: contents;
+  }
+
+  /* Sideways the rail would read as a divider between tags rather than as
+     nesting, so the row drops it and uses pills instead. */
+  .tab-nested {
+    column-gap: 0.8rem;
+    flex-basis: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: -0.8rem;
+    padding-left: 0;
+    row-gap: 0.8rem;
+  }
+
+  .tab-nested::before,
+  .tag-filter::before {
     display: none;
   }
 
-  .tab-link.active {
-    border-bottom: 1px solid var(--text-link);
-    margin-bottom: -1px;
+  .tag-filter {
+    border: 0.5px solid var(--hairline-strong);
+    border-radius: 999px;
+    line-height: 1.7rem;
+    padding: 0.5rem 1.15rem;
+  }
+
+  /* Tonal fill rather than a solid black slug — the darker rim and text carry the
+     state without the pill shouting over the post list. */
+  .tag-filter[aria-pressed='true'] {
+    background: var(--pill-selected-bg);
+    border-color: var(--pill-selected-border);
+    color: var(--black);
   }
 
   .content-column {
@@ -426,13 +523,6 @@ th {
 
   .site-shell {
     padding: 2.6rem 1.6rem 4rem;
-  }
-
-  .tabs {
-    margin-left: -1.6rem;
-    margin-right: -1.6rem;
-    padding-left: 1.6rem;
-    padding-right: 1.6rem;
   }
 
   .post-content pre {

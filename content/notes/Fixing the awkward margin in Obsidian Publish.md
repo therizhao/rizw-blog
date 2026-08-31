@@ -1,3 +1,6 @@
+---
+date: '2025-10-20'
+---
 The default Obsidian publish theme, has a weird margin for root docs (docs not in subfolders) on the sidebar. 
 
 ![[CleanShot 2025-10-20 at 09.51.57@2x.png|500]]

@@ -1,3 +1,6 @@
+---
+date: '2025-10-19'
+---
 A recent conversation with a friend got me thinking. 
 
 I haven't been doing good. Or rather, I haven't intentionally been. 

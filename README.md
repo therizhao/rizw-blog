@@ -2,12 +2,26 @@
 
 TypeScript static blog built from the root `content/` folder.
 
-## Authoring
+## Structure
 
-Each direct subfolder in `content/` becomes a top-level tab. Add a markdown file anywhere inside a tab folder and it becomes a post:
+The site has two sections: **About** (`/`, sourced from `content/notes/hey 👋.md`) and
+**Writings** (`/writings/`), a filterable list of every other post.
+
+Each direct subfolder in `content/` maps to one writing tag used by the `/writings/`
+toggle filters. One tag can be active at a time; none selected shows everything.
+
+| Folder                        | Tag      |
+| ----------------------------- | -------- |
+| `content/climbing/`           | `climb`  |
+| `content/notes/`, `old-posts/`| `blog`   |
+| `content/designs/`            | `design` |
+| `content/make/`               | `make`   |
+
+Tag order in the sidebar comes from `WRITING_TAGS` in `src/lib/content.ts`.
+
+Add a markdown file anywhere inside one of those folders and it becomes a post:
 
 - `content/notes/My note.md` -> `/notes/my-note/`
-- `content/daily/2026-06-19.md` -> `/daily/2026-06-19/`
 - `content/designs/my-project/index.md` -> `/designs/my-project/`
 
 Markdown frontmatter is optional:

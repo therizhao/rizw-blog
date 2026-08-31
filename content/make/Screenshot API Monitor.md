@@ -1,3 +1,6 @@
+---
+date: '2025-11-09'
+---
 # One-Liner
 
 **"Alerts you when your website looks broken to users, even if your API says everything's fine."**
