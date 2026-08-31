@@ -1,3 +1,6 @@
+---
+date: '2025-11-09'
+---
 When ideas are manifested, they should be written down and not judged. Ideas should only be judged after they are written down.
 
 Optimise for quantity and quantity only.

@@ -1,3 +1,6 @@
+---
+date: '2025-11-01'
+---
 *Yosemite Day 3 – 27 Oct 25*
 
 David was a 50 plus year old teacher at a technical school in Montpellier, France. He just came down from El Capitan and was looking for some chill climbs to do. He asked me if I had anything in mind. As I'm not familiar with the area I asked him to suggest a route.

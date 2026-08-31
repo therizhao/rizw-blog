@@ -1,3 +1,6 @@
+---
+date: '2025-11-09'
+---
 I will be attempting to build N profit-making products.
 
 Stages

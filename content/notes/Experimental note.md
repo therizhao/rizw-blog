@@ -1,3 +1,6 @@
+---
+date: '2025-10-30'
+---
 I started this blog as a space to express myself without restrictions
 
 To write
