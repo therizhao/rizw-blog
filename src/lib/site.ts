@@ -36,14 +36,19 @@ export function renderAboutPage(aboutPost: Post | undefined): string {
   });
 }
 
-export function renderWritingsPage(posts: PostMeta[]): string {
-  // Tag filters live in the sidebar as children of the Writings item. One at a time:
-  // nothing selected is the default and means "everything".
+// Tag filters live in the sidebar as children of the Writings item. One at a time:
+// nothing selected is the default and means "everything". Shown on the writings list
+// and on individual post pages so the filters stay reachable everywhere under Writings.
+function renderTagToggles(): string {
   const toggles = WRITING_TAGS.map(
     (tag) =>
       `<button type="button" class="tag-filter" data-tag="${tag}" aria-pressed="false">${escapeHtml(capitalize(tag))}</button>`,
   ).join('');
 
+  return `<div class="tab-nested" role="group" aria-label="Filter writings by tag">${toggles}</div>`;
+}
+
+export function renderWritingsPage(posts: PostMeta[]): string {
   const items = posts
     .map((post) => {
       // A cover image in the frontmatter replaces the text excerpt as the preview.
@@ -71,7 +76,7 @@ export function renderWritingsPage(posts: PostMeta[]): string {
 
   return renderLayout({
     activeSection: 'writings',
-    nestedNav: `<div class="tab-nested" role="group" aria-label="Filter writings by tag">${toggles}</div>`,
+    nestedNav: renderTagToggles(),
     content: `
       ${list}
       <p class="empty-state filter-empty" hidden>Nothing tagged that yet.</p>
@@ -84,15 +89,16 @@ export function renderWritingsPage(posts: PostMeta[]): string {
 export function renderPostPage(post: Post): string {
   return renderLayout({
     activeSection: 'writings',
+    nestedNav: renderTagToggles(),
     content: `
       <article class="post-page">
         <header class="post-header">
           <h1>${escapeHtml(post.title)}</h1>
           ${renderMeta(post)}
-          <p class="post-tag"><a href="/writings/">${escapeHtml(capitalize(post.tag))}</a></p>
         </header>
         <div class="post-content">${post.html}</div>
       </article>
+      ${postFilterScript}
     `,
     description: post.excerpt,
     title: post.title,
@@ -207,6 +213,36 @@ const filterScript = `<script>
   });
 
   apply();
+})();
+</script>`;
+
+// On a post page there is no list to filter, so a toggle just records the choice and
+// sends the reader to the writings list, where filterScript picks it up from storage.
+const postFilterScript = `<script>
+(function () {
+  var KEY = 'writings-filter';
+  var toggles = Array.prototype.slice.call(document.querySelectorAll('.tag-filter'));
+  if (!toggles.length) return;
+
+  var tags = toggles.map(function (button) { return button.dataset.tag; });
+  var active = null;
+
+  try {
+    var stored = localStorage.getItem(KEY);
+    if (tags.indexOf(stored) !== -1) active = stored;
+  } catch (error) {}
+
+  toggles.forEach(function (button) {
+    button.setAttribute('aria-pressed', button.dataset.tag === active ? 'true' : 'false');
+    button.addEventListener('click', function () {
+      var next = active === button.dataset.tag ? null : button.dataset.tag;
+      try {
+        if (next === null) localStorage.removeItem(KEY);
+        else localStorage.setItem(KEY, next);
+      } catch (error) {}
+      window.location.href = '/writings/';
+    });
+  });
 })();
 </script>`;
 

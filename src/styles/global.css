@@ -335,16 +335,6 @@ th {
   outline-offset: 3px;
 }
 
-.post-tag {
-  margin: 0.8rem 0 0;
-}
-
-.post-tag a {
-  border-bottom: none;
-  color: var(--gray);
-  font-size: 1.3rem;
-}
-
 .post-link {
   border-bottom: none;
   color: inherit;
